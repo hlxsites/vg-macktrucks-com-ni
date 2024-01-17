@@ -160,9 +160,11 @@ export default async function decorate(block) {
     newsletter.appendChild(oldNews);
 
     const eloquaForm = block.querySelector('.eloqua-form');
-    eloquaForm?.setAttribute('data-block-name', 'eloqua-form');
-    newsletter.append(eloquaForm);
-    addClassToTitle(newsletter, `${blockNameNewsletter}__title`);
+    if (eloquaForm) {
+      eloquaForm?.setAttribute('data-block-name', 'eloqua-form');
+      newsletter.append(eloquaForm);
+      addClassToTitle(newsletter, `${blockNameNewsletter}__title`);
+    }
 
     // Menu Columns: menu
     const menu = createElement('div', { classes: `${blockNameMenu}__columns` });
@@ -171,7 +173,7 @@ export default async function decorate(block) {
     menuList.forEach((item) => item.classList.add(`${blockNameMenu}__column`));
 
     newMenu.appendChild(menu);
-    newMenu.appendChild(newsletter);
+    if (eloquaForm) newMenu.appendChild(newsletter);
     newFooter.append(newMenu);
   }
 
@@ -243,12 +245,14 @@ export default async function decorate(block) {
   };
 
   const eloquaForm = block.querySelector('.eloqua-form');
-  observer = new MutationObserver(onFormLoaded);
-  observer.observe(eloquaForm, {
-    childList: true,
-    attributes: false,
-    subtree: true,
-  });
+  if (eloquaForm) {
+    observer = new MutationObserver(onFormLoaded);
+    observer.observe(eloquaForm, {
+      childList: true,
+      attributes: false,
+      subtree: true,
+    });
+  }
 
   block.addEventListener('click', (e) => {
     if (e.target.classList.contains(`${blockNameTruckList}__title`)) {
