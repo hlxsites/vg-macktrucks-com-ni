@@ -1,6 +1,6 @@
 import { readBlockConfig, decorateIcons, loadBlocks } from '../../scripts/lib-franklin.js';
 import {
-  createElement, getTextLabel, isEloquaFormAllowed,
+  createElement, getTextLabel, isTargetingAllowed,
 } from '../../scripts/common.js';
 
 const PLACEHOLDERS = {
@@ -163,8 +163,8 @@ export default async function decorate(block) {
     if (eloquaForm) {
       eloquaForm?.setAttribute('data-block-name', 'eloqua-form');
       newsletter.append(eloquaForm);
-      addClassToTitle(newsletter, `${blockNameNewsletter}__title`);
     }
+    addClassToTitle(newsletter, `${blockNameNewsletter}__title`);
 
     // Menu Columns: menu
     const menu = createElement('div', { classes: `${blockNameMenu}__columns` });
@@ -189,7 +189,7 @@ export default async function decorate(block) {
   await loadBlocks(block);
 
   const onFormLoaded = (mutationList) => {
-    if (!isEloquaFormAllowed()) {
+    if (!isTargetingAllowed()) {
       return;
     }
 
