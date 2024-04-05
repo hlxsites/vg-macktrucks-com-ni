@@ -1,30 +1,27 @@
 // eslint-disable-next-line import/no-cycle
 import { sampleRUM, loadScript } from './lib-franklin.js';
-
-const COOKIES = {
-  performance: 'C0002:1',
-};
+import { isPerformanceAllowed } from './common.js';
+import {
+  DATA_DOMAIN_SCRIPT,
+  GTM_ID,
+} from './constants.js';
 
 // Core Web Vitals RUM collection
 sampleRUM('cwv');
 
-const cookieSetting = decodeURIComponent(document.cookie.split(';')
-  .find((cookie) => cookie.trim().startsWith('OptanonConsent=')));
-const isPerformanceAllowed = cookieSetting.includes(COOKIES.performance);
-
-if (isPerformanceAllowed) {
+// COOKIE ACCEPTANCE CHECKING
+if (isPerformanceAllowed()) {
   loadGoogleTagManager();
 }
 
 // add more delayed functionality here
-/* Commented until the site is live --->
 // Prevent the cookie banner from loading when running in library
 if (!window.location.pathname.includes('srcdoc')
   && !['localhost', 'hlx.page'].some((url) => window.location.host.includes(url))) {
   loadScript('https://cdn.cookielaw.org/scripttemplates/otSDKStub.js', {
     type: 'text/javascript',
     charset: 'UTF-8',
-    'data-domain-script': 'bf50d0a6-e209-4fd4-ad2c-17da5f9e66a5', // ? one trust id?
+    'data-domain-script': DATA_DOMAIN_SCRIPT,
   });
 }
 
@@ -45,7 +42,7 @@ window.OptanonWrapper = () => {
     }
   });
 };
----> */
+
 
 // Google Analytics
 async function loadGoogleTagManager() {
@@ -54,5 +51,5 @@ async function loadGoogleTagManager() {
   (function (w, d, s, l, i) {
     w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); const f = d.getElementsByTagName(s)[0]; const j = d.createElement(s); const
       dl = l !== 'dataLayer' ? `&l=${l}` : ''; j.async = true; j.src = `https://www.googletagmanager.com/gtm.js?id=${i}${dl}`; f.parentNode.insertBefore(j, f);
-  }(window, document, 'script', 'dataLayer', 'GTM-5DKKVHFL'));
+  }(window, document, 'script', 'dataLayer', GTM_ID));
 }
